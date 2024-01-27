@@ -1,0 +1,28 @@
+{
+  "wallet-assets": [
+    {
+      "asset_id": "asset1",
+      "wallet_id": "wallet1",
+      "shares": "1000",
+      "created_at": "2018-01-01T00:00:00Z",
+      "updated_at": "2018-01-01T00:00:00Z",
+      "asset": {
+        "id": "asset1",
+        "symbol": "asset1",
+        "price": "100"
+      }
+    },
+    {
+      "asset_id": "asset2",
+      "wallet_id": "wallet1",
+      "shares": "5000",
+      "created_at": "2018-01-01T00:00:00Z",
+      "updated_at": "2018-01-01T00:00:00Z",
+      "asset": {
+        "id": "asset1",
+        "symbol": "asset1",
+        "price": "200"
+      }
+    }
+  ]
+}
