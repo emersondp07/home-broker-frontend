@@ -1,3 +1,5 @@
+import { revalidateTag } from "next/cache";
+
 async function initTransaction(formData: FormData) {
   "use server";
   const shares = formData.get("shares");
@@ -6,31 +8,39 @@ async function initTransaction(formData: FormData) {
   const asset_id = formData.get("asset_id");
   const type = formData.get("type");
 
-  console.log(shares, price, wallet_id, asset_id, type);
+  const response = await fetch(
+    `http://localhost:8000/wallets/${wallet_id}/orders`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify({
+        shares,
+        price,
+        asset_id,
+        type,
+        status: "OPEN",
+        asset: {
+          id: asset_id,
+          symbol: "PETR4",
+          price: 30,
+        },
+      }),
+    }
+  );
+  revalidateTag(`orders-wallet-${wallet_id}`);
 
-  // return await fetch(`http://localhost:8000/wallets/${wallet_id}/orders`, {
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //   },
-  //   method: "POST",
-  //   body: JSON.stringify({
-  //     shares,
-  //     price,
-  //     asset_id,
-  //     type,
-  //   }),
-  // });
+  return await response.json();
 }
 
 export function OrderForm(props: { asset_id: string; wallet_id: string }) {
-  console.log(props);
-
   return (
     <div>
       <h1>Order Form</h1>
       <form action={initTransaction}>
-        <input name="asset_id" type="hidden" value={props.asset_id} />
-        <input name="wallet_id" type="hidden" value={props.wallet_id} />
+        <input name="asset_id" type="hidden" defaultValue={props.asset_id} />
+        <input name="wallet_id" type="hidden" defaultValue={props.wallet_id} />
         <input name="type" type="hidden" defaultValue={"BUY"} />
         <input
           name="shares"

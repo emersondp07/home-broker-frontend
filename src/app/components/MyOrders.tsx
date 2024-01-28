@@ -1,8 +1,15 @@
 import { Order } from "../models";
 
-async function getOrderstAssets(wallet_id: string): Promise<Order[]> {
+async function getOrders(wallet_id: string): Promise<Order[]> {
   const response = await fetch(
-    `http://localhost:8000/wallets/${wallet_id}/orders`
+    `http://localhost:8000/wallets/${wallet_id}/orders`,
+    {
+      next: {
+        tags: [`orders-wallet-${wallet_id}`],
+        // revalidate: isHomeBrokerClosed() ? 60 * 60 : 5,
+        revalidate: 1,
+      },
+    }
   )
     .then((response) => response.json())
     .then((response) => response);
@@ -11,9 +18,7 @@ async function getOrderstAssets(wallet_id: string): Promise<Order[]> {
 }
 
 export async function MyOrders(props: { wallet_id: string }) {
-  console.log(props);
-
-  const orders = await getOrderstAssets(props.wallet_id);
+  const orders = await getOrders(props.wallet_id);
 
   return (
     <ul>

@@ -1,10 +1,14 @@
 import { MyOrders } from "../../../components/MyOrders";
 import { OrderForm } from "../../../components/OrderFrom";
 
-export default async function HomeBrokerPage(params: {
-  wallet_id: string;
-  asset_id: string;
-}) {
+interface Params {
+  params: {
+    wallet_id: string;
+    asset_id: string;
+  };
+}
+
+export default async function HomeBrokerPage({ params }: Params) {
   return (
     <div>
       <h1>Meus investimentos</h1>
