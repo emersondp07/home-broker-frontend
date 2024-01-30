@@ -12,6 +12,7 @@
   "dependencies": {
     "flowbite": "2.2.1",
     "flowbite-react": "0.7.2",
+    "lightweight-charts": "4.1.2",
     "next": "14.1.0",
     "react": "^18",
     "react-dom": "^18"
@@ -23,6 +24,7 @@
     "autoprefixer": "^10.0.1",
     "eslint": "^8",
     "eslint-config-next": "14.1.0",
+    "flowbite-typography": "1.0.3",
     "json-server": "0.17.3",
     "postcss": "^8",
     "tailwindcss": "^3.3.0",

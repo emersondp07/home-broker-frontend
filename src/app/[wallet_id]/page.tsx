@@ -6,8 +6,8 @@ export default async function HomePage({
   params: { wallet_id: string };
 }) {
   return (
-    <main>
-      <article>
+    <main className="container mx-auto px-2">
+      <article className="format format-invert">
         <h1>Meus investimentos</h1>
       </article>
       <MyWallet wallet_id={params.wallet_id} />

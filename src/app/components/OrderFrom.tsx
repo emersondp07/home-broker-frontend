@@ -1,3 +1,4 @@
+import { Button, Label, TextInput } from "flowbite-react";
 import { revalidateTag } from "next/cache";
 
 async function initTransaction(formData: FormData) {
@@ -34,7 +35,11 @@ async function initTransaction(formData: FormData) {
   return await response.json();
 }
 
-export function OrderForm(props: { asset_id: string; wallet_id: string }) {
+export function OrderForm(props: {
+  asset_id: string;
+  wallet_id: string;
+  type: "BUY" | "SELL";
+}) {
   return (
     <div>
       <h1>Order Form</h1>
@@ -42,23 +47,46 @@ export function OrderForm(props: { asset_id: string; wallet_id: string }) {
         <input name="asset_id" type="hidden" defaultValue={props.asset_id} />
         <input name="wallet_id" type="hidden" defaultValue={props.wallet_id} />
         <input name="type" type="hidden" defaultValue={"BUY"} />
-        <input
-          name="shares"
-          type="number"
-          min={1}
-          step={1}
-          placeholder="quantidade"
-        />
+        <div>
+          <div className="mb-2 block">
+            <Label htmlFor="shares" value="Quantidade" />
+          </div>
+          <TextInput
+            id="shares"
+            name="shares"
+            required
+            type="number"
+            min={1}
+            step={1}
+            defaultValue={1}
+          />
+        </div>
         <br />
-        <input
-          name="price"
-          type="number"
-          min={1}
-          step={0.1}
-          placeholder="preco"
-        />
+        <div>
+          <div className="mb-2 block">
+            <Label htmlFor="shares" value="Preço R$" />
+          </div>
+          <TextInput
+            id="price"
+            name="price"
+            required
+            type="number"
+            min={1}
+            step={1}
+            defaultValue={1}
+          />
+        </div>
         <br />
-        <button>Comprar</button>
+        <Button
+          type="submit"
+          className={
+            props.type === "BUY"
+              ? "focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+              : "focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+          }
+        >
+          Confirmar {props.type === "BUY" ? "compra" : "venda"}
+        </Button>
       </form>
     </div>
   );
