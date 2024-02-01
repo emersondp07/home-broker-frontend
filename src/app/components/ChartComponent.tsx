@@ -1,6 +1,11 @@
 "use client";
 
-import { ColorType, ISeriesApi, createChart } from "lightweight-charts";
+import {
+  ColorType,
+  IChartApi,
+  ISeriesApi,
+  createChart,
+} from "lightweight-charts";
 import {
   MutableRefObject,
   forwardRef,
@@ -41,10 +46,16 @@ export const ChartComponent = forwardRef<
   ChartComponentRef,
   { header: string; data?: any[] }
 >((props, ref) => {
-  const chartContainerRef = useRef() as MutableRefObject<HTMLDivElement>;
-  const chartRef = useRef({
+  const chartContainerRef = useRef<HTMLDivElement>(null); // Defina o tipo de retorno aqui
+
+  // Defina o tipo de retorno da função api
+  const chartRef = useRef<{
+    _api?: IChartApi;
+    api: () => IChartApi;
+    free: () => void;
+  }>({
     api() {
-      if (!this._api) {
+      if (!this._api && chartContainerRef.current) {
         this._api = createChart(chartContainerRef.current, {
           ...chartOptions,
           width: chartContainerRef.current.clientWidth,
@@ -52,7 +63,7 @@ export const ChartComponent = forwardRef<
         });
         this._api.timeScale().fitContent();
       }
-      return this._api;
+      return this._api as IChartApi; // Garanta que o retorno seja do tipo IChartApi
     },
     free() {
       if (this._api) {
@@ -95,7 +106,9 @@ export const ChartComponent = forwardRef<
     const handleResize = () => {
       chart.applyOptions({
         ...chartOptions,
-        width: chartContainerRef.current.clientWidth,
+        width: chartContainerRef.current
+          ? chartContainerRef.current.clientWidth
+          : 0,
       });
     };
 

@@ -1,6 +1,10 @@
-import { Card, TabItem } from "flowbite-react";
+import { Card } from "flowbite-react";
+import { AssetChartComponent } from "../../../components/AssetChatComponent";
+
 import MyOrders from "../../../components/MyOrders";
-import { OrderForm } from "../../../components/OrderFrom";
+import { OrderForm } from "../../../components/OrderForm";
+import { SyncOrders } from "../../../components/SyncOrders";
+import { TabsItem } from "../../../components/flow-bite-component";
 import { HiArrowUp, HiShoppingCart } from "../../../components/react-icons/hi";
 
 export default async function HomeBrokerPage({
@@ -24,22 +28,22 @@ export default async function HomeBrokerPage({
                 },
               }}
             >
-              {/* <div aria-label="Default tabs"> */}
-              <TabItem active title="Comprar" icon={HiShoppingCart}>
-                <OrderForm
-                  wallet_id={params.wallet_id}
-                  asset_id={params.asset_id}
-                  type="BUY"
-                />
-              </TabItem>
-              <TabItem title="Vender" icon={HiArrowUp}>
-                <OrderForm
-                  wallet_id={params.wallet_id}
-                  asset_id={params.asset_id}
-                  type="SELL"
-                />
-              </TabItem>
-              {/* </div> */}
+              <TabsGroup aria-label="Default tabs" style="pills">
+                <TabsItem active title="Comprar" icon={HiShoppingCart}>
+                  <OrderForm
+                    wallet_id={params.wallet_id}
+                    asset_id={params.asset_id}
+                    type="BUY"
+                  />
+                </TabsItem>
+                <TabsItem title="Vender" icon={HiArrowUp}>
+                  <OrderForm
+                    wallet_id={params.wallet_id}
+                    asset_id={params.asset_id}
+                    type="SELL"
+                  />
+                </TabsItem>
+              </TabsGroup>
             </Card>
           </div>
           <div className="mt-2">
@@ -51,16 +55,16 @@ export default async function HomeBrokerPage({
                 },
               }}
             >
-              {/* <SyncOrders wallet_id={params.wallet_id}> */}
-              <div className="max-h-96 overflow-y-auto overflow-hidden">
-                <MyOrders wallet_id={params.wallet_id} />
-              </div>
-              {/* </SyncOrders> */}
+              <SyncOrders wallet_id={params.wallet_id}>
+                <div className="max-h-96 overflow-y-auto overflow-hidden">
+                  <MyOrders wallet_id={params.wallet_id} />
+                </div>
+              </SyncOrders>
             </Card>
           </div>
         </div>
         <div className="col-span-3 flex flex-grow">
-          {/* <AssetChartComponent asset_id={params.asset_id} /> */}
+          <AssetChartComponent asset_id={params.asset_id} />
         </div>
       </div>
     </main>

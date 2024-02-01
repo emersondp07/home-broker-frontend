@@ -10,7 +10,7 @@ async function initTransaction(formData: FormData) {
   const type = formData.get("type");
 
   const response = await fetch(
-    `http://localhost:8000/wallets/${wallet_id}/orders`,
+    `http://host.docker.internal:3000/wallets/${wallet_id}/orders`,
     {
       headers: {
         "Content-Type": "application/json",
@@ -22,7 +22,7 @@ async function initTransaction(formData: FormData) {
         asset_id,
         type,
         status: "OPEN",
-        asset: {
+        Asset: {
           id: asset_id,
           symbol: "PETR4",
           price: 30,
@@ -31,7 +31,6 @@ async function initTransaction(formData: FormData) {
     }
   );
   revalidateTag(`orders-wallet-${wallet_id}`);
-
   return await response.json();
 }
 
@@ -77,14 +76,7 @@ export function OrderForm(props: {
           />
         </div>
         <br />
-        <Button
-          type="submit"
-          className={
-            props.type === "BUY"
-              ? "focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-              : "focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-          }
-        >
+        <Button type="submit" color={props.type === "BUY" ? "green" : "red"}>
           Confirmar {props.type === "BUY" ? "compra" : "venda"}
         </Button>
       </form>

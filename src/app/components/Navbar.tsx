@@ -1,5 +1,7 @@
 "use client";
+
 import { Navbar } from "flowbite-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 
@@ -10,8 +12,15 @@ export default function DefaultNavbar() {
   return (
     <Navbar fluid rounded>
       <Navbar.Brand href="https://flowbite-react.com">
+        <Image
+          className="mr-3 h-6 sm:h-9"
+          alt="Full Cycle Invest"
+          src="/logo.png"
+          width={37}
+          height={40}
+        />
         <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
-          Invest
+          FullCycle Invest
         </span>
       </Navbar.Brand>
       <Navbar.Toggle />
