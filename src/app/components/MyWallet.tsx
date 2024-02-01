@@ -4,16 +4,16 @@ import Link from "next/link";
 import useSWR from "swr";
 import useSWRSubscription, { SWRSubscriptionOptions } from "swr/subscription";
 
+import { Table } from "flowbite-react";
+import { fetcher } from "../../utils/is-home-broker-closed";
+import { Asset, WalletAsset } from "../models";
 import {
-  Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeadCell,
   TableRow,
-} from "flowbite-react";
-import { fetcher } from "../../utils/is-home-broker-closed";
-import { Asset, WalletAsset } from "../models";
+} from "./flow-bite-component";
 //Server Components - 13
 //
 // async function getWalletAssets(wallet_id: string): Promise<WalletAsset[]> {

@@ -4,7 +4,7 @@ import { AssetChartComponent } from "../../../components/AssetChatComponent";
 import MyOrders from "../../../components/MyOrders";
 import { OrderForm } from "../../../components/OrderForm";
 import { SyncOrders } from "../../../components/SyncOrders";
-import { TabsItem } from "../../../components/flow-bite-component";
+import { TabsGroup, TabsItem } from "../../../components/flow-bite-component";
 import { HiArrowUp, HiShoppingCart } from "../../../components/react-icons/hi";
 
 export default async function HomeBrokerPage({
