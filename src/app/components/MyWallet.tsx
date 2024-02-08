@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import useSWR from "swr";
-import useSWRSubscription, { SWRSubscriptionOptions } from "swr/subscription";
 
 import { Table } from "flowbite-react";
-import { fetcher } from "../../utils/is-home-broker-closed";
+import useSWR from "swr";
+import useSWRSubscription, { SWRSubscriptionOptions } from "swr/subscription";
+import { fetcher } from "../../utils/fetcher";
 import { Asset, WalletAsset } from "../models";
 import {
   TableBody,
@@ -14,11 +14,10 @@ import {
   TableHeadCell,
   TableRow,
 } from "./flow-bite-component";
-//Server Components - 13
-//
+
 // async function getWalletAssets(wallet_id: string): Promise<WalletAsset[]> {
 //   const response = await fetch(
-//     `http://host.docker.internal:3000/wallets/${wallet_id}/assets`,
+//     `http://localhost:3000/wallets/${wallet_id}/assets`,
 //     {
 //       //cache: 'no-store', processamento sempre dinamico
 //       next: {
@@ -26,12 +25,15 @@ import {
 //         revalidate: 1,
 //       },
 //     }
-//   );
-//   return response.json();
+//   )
+//     .then((response) => response.json())
+//     .then((response) => response);
+
+//   return response;
 // }
 
 export default function MyWallet(props: { wallet_id: string }) {
-  //const walletAssets = await getWalletAssets(props.wallet_id);
+  // const walletAssets = await getWalletAssets(props.wallet_id);
   const {
     data: walletAssets,
     error,
@@ -47,10 +49,10 @@ export default function MyWallet(props: { wallet_id: string }) {
   );
 
   const { data: assetChanged } = useSWRSubscription(
-    `http://localhost:3000/assets/events`,
+    `http://localhost:3001/api/wallets/${props.wallet_id}/assets/events`,
     (path, { next }: SWRSubscriptionOptions) => {
       const eventSource = new EventSource(path);
-      eventSource.addEventListener("asset-price-changed", async (event) => {
+      eventSource.addEventListener("wallet-asset-updated", async (event) => {
         console.log(event);
         const assetChanged: Asset = JSON.parse(event.data);
         await mutateWalletAssets((prev) => {
@@ -79,37 +81,37 @@ export default function MyWallet(props: { wallet_id: string }) {
     {}
   );
 
-  const { data: walletAssetUpdated } = useSWRSubscription(
-    `http://localhost:3000/wallets/${props.wallet_id}/assets/events`,
-    (path, { next }: SWRSubscriptionOptions) => {
-      const eventSource = new EventSource(path);
+  // const { data: walletAssetUpdated } = useSWRSubscription(
+  //   `http://localhost:3000/wallets/${props.wallet_id}/assets/events`,
+  //   (path, { next }: SWRSubscriptionOptions) => {
+  //     const eventSource = new EventSource(path);
 
-      eventSource.addEventListener("wallet-asset-updated", async (event) => {
-        const walletAssetUpdated: WalletAsset = JSON.parse(event.data);
-        console.log(walletAssetUpdated);
-        await mutateWalletAssets((prev) => {
-          const foundIndex = prev?.findIndex(
-            (walletAsset) =>
-              walletAsset.asset_id === walletAssetUpdated.asset_id
-          );
-          if (foundIndex !== -1) {
-            console.log("entrou aqui");
-            prev![foundIndex!].shares = walletAssetUpdated.shares;
-          }
+  //     eventSource.addEventListener("wallet-asset-updated", async (event) => {
+  //       const walletAssetUpdated: WalletAsset = JSON.parse(event.data);
+  //       console.log(walletAssetUpdated);
+  //       await mutateWalletAssets((prev) => {
+  //         const foundIndex = prev?.findIndex(
+  //           (walletAsset) =>
+  //             walletAsset.asset_id === walletAssetUpdated.asset_id
+  //         );
+  //         if (foundIndex !== -1) {
+  //           console.log("entrou aqui");
+  //           prev![foundIndex!].shares = walletAssetUpdated.shares;
+  //         }
 
-          return [...prev!];
-        }, false);
-        next(null, walletAssetUpdated);
-      });
-      eventSource.onerror = (error) => {
-        console.error(error);
-        eventSource.close();
-      };
-      return () => {
-        eventSource.close();
-      };
-    }
-  );
+  //         return [...prev!];
+  //       }, false);
+  //       next(null, walletAssetUpdated);
+  //     });
+  //     eventSource.onerror = (error) => {
+  //       console.error(error);
+  //       eventSource.close();
+  //     };
+  //     return () => {
+  //       eventSource.close();
+  //     };
+  //   }
+  // );
 
   return (
     <Table>
@@ -122,23 +124,24 @@ export default function MyWallet(props: { wallet_id: string }) {
         </TableHeadCell>
       </TableHead>
       <TableBody className="divide-y">
-        {walletAssets!.map((walletAsset, key) => (
-          <TableRow className="border-gray-700 bg-gray-800" key={key}>
-            <TableCell className="whitespace-nowrap font-medium text-white">
-              {walletAsset.asset.id} ({walletAsset.asset.symbol})
-            </TableCell>
-            <TableCell>{walletAsset.asset.price}</TableCell>
-            <TableCell>{walletAsset.shares}</TableCell>
-            <TableCell>
-              <Link
-                className="font-medium hover:underline text-cyan-500"
-                href={`/${props.wallet_id}/home-broker/${walletAsset.asset.id}`}
-              >
-                Comprar/Vender
-              </Link>
-            </TableCell>
-          </TableRow>
-        ))}
+        {walletAssets &&
+          walletAssets.map((walletAsset, key) => (
+            <TableRow className="border-gray-700 bg-gray-800" key={key}>
+              <TableCell className="whitespace-nowrap font-medium text-white">
+                {walletAsset.asset.id} ({walletAsset.asset.symbol})
+              </TableCell>
+              <TableCell>{walletAsset.asset.price}</TableCell>
+              <TableCell>{walletAsset.shares}</TableCell>
+              <TableCell>
+                <Link
+                  className="font-medium hover:underline text-cyan-500"
+                  href={`/${props.wallet_id}/home-broker/${walletAsset.asset.id}`}
+                >
+                  Comprar/Vender
+                </Link>
+              </TableCell>
+            </TableRow>
+          ))}
       </TableBody>
     </Table>
   );

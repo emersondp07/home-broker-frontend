@@ -10,7 +10,11 @@ export default async function HomePage({
       <article className="format format-invert">
         <h1>Meus investimentos</h1>
       </article>
-      <MyWallet wallet_id={params.wallet_id} />
+      <MyWallet
+        wallet_id={
+          params.wallet_id !== "favicon.ico" ? params.wallet_id : "wallet1"
+        }
+      />
     </main>
   );
 }

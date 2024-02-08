@@ -1,17 +1,16 @@
+import { Badge, Table } from "flowbite-react";
+import { Order } from "../models";
 import {
-  Badge,
-  Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeadCell,
   TableRow,
-} from "flowbite-react";
-import { Order } from "../models";
+} from "./flow-bite-component";
 //Server Components - 13
 async function getOrders(wallet_id: string): Promise<Order[]> {
   const response = await fetch(
-    `http://host.docker.internal:3000/wallets/${wallet_id}/orders`,
+    `http://localhost:3000/wallets/${wallet_id}/orders`,
     {
       next: {
         tags: [`orders-wallet-${wallet_id}`],
@@ -19,8 +18,11 @@ async function getOrders(wallet_id: string): Promise<Order[]> {
         revalidate: 1,
       },
     }
-  );
-  return response.json();
+  )
+    .then((response) => response.json())
+    .then((response) => response);
+
+  return response;
 }
 // 10 am - 17 18
 export default async function MyOrders(props: { wallet_id: string }) {

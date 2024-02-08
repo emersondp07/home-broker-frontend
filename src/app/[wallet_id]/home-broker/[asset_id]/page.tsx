@@ -12,6 +12,8 @@ export default async function HomeBrokerPage({
 }: {
   params: { wallet_id: string; asset_id: string };
 }) {
+  console.log(params.wallet_id);
+
   return (
     <main className="flex flex-grow flex-col container mx-auto p-2">
       <article className="format format-invert">

@@ -10,7 +10,7 @@ async function initTransaction(formData: FormData) {
   const type = formData.get("type");
 
   const response = await fetch(
-    `http://host.docker.internal:3000/wallets/${wallet_id}/orders`,
+    `http://localhost:3000/wallets/${wallet_id}/orders`,
     {
       headers: {
         "Content-Type": "application/json",

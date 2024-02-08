@@ -26,7 +26,7 @@ export const AssetChartComponent = (props: { asset_id: string }) => {
         console.log(event);
         const assetDailyCreated: AssetDaily = JSON.parse(event.data);
         chartRef.current.update({
-          time: new Date(assetDailyCreated.date).getTime(),
+          time: String(new Date(assetDailyCreated.date).getTime()),
           value: assetDailyCreated.price,
         });
         await mutate(
