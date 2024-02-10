@@ -13,7 +13,7 @@ import {
   TableHead,
   TableHeadCell,
   TableRow,
-} from "./flow-bite-component";
+} from "./flow-bite-components";
 
 // async function getWalletAssets(wallet_id: string): Promise<WalletAsset[]> {
 //   const response = await fetch(
@@ -39,7 +39,7 @@ export default function MyWallet(props: { wallet_id: string }) {
     error,
     mutate: mutateWalletAssets,
   } = useSWR<WalletAsset[]>(
-    `http://localhost:3001/api/wallets/${props.wallet_id}/assets`,
+    `http://localhost:3000/wallets/${props.wallet_id}/assets`,
     fetcher,
     {
       fallbackData: [],
@@ -49,10 +49,11 @@ export default function MyWallet(props: { wallet_id: string }) {
   );
 
   const { data: assetChanged } = useSWRSubscription(
-    `http://localhost:3001/api/wallets/${props.wallet_id}/assets/events`,
+    `http://localhost:3000/assets/events`,
     (path, { next }: SWRSubscriptionOptions) => {
       const eventSource = new EventSource(path);
-      eventSource.addEventListener("wallet-asset-updated", async (event) => {
+
+      eventSource.addEventListener("asset-price-changed", async (event) => {
         console.log(event);
         const assetChanged: Asset = JSON.parse(event.data);
         await mutateWalletAssets((prev) => {
@@ -61,7 +62,7 @@ export default function MyWallet(props: { wallet_id: string }) {
           );
 
           if (foundIndex !== -1) {
-            prev![foundIndex].asset.price = assetChanged.price;
+            prev![foundIndex!].asset.price = assetChanged.price;
           }
           console.log(prev);
           return [...prev!];
@@ -81,37 +82,37 @@ export default function MyWallet(props: { wallet_id: string }) {
     {}
   );
 
-  // const { data: walletAssetUpdated } = useSWRSubscription(
-  //   `http://localhost:3000/wallets/${props.wallet_id}/assets/events`,
-  //   (path, { next }: SWRSubscriptionOptions) => {
-  //     const eventSource = new EventSource(path);
+  const { data: walletAssetUpdated } = useSWRSubscription(
+    `http://localhost:3000/wallets/${props.wallet_id}/assets/events`,
+    (path, { next }: SWRSubscriptionOptions) => {
+      const eventSource = new EventSource(path);
 
-  //     eventSource.addEventListener("wallet-asset-updated", async (event) => {
-  //       const walletAssetUpdated: WalletAsset = JSON.parse(event.data);
-  //       console.log(walletAssetUpdated);
-  //       await mutateWalletAssets((prev) => {
-  //         const foundIndex = prev?.findIndex(
-  //           (walletAsset) =>
-  //             walletAsset.asset_id === walletAssetUpdated.asset_id
-  //         );
-  //         if (foundIndex !== -1) {
-  //           console.log("entrou aqui");
-  //           prev![foundIndex!].shares = walletAssetUpdated.shares;
-  //         }
+      eventSource.addEventListener("wallet-asset-updated", async (event) => {
+        const walletAssetUpdated: WalletAsset = JSON.parse(event.data);
+        console.log(walletAssetUpdated);
+        await mutateWalletAssets((prev) => {
+          const foundIndex = prev?.findIndex(
+            (walletAsset) =>
+              walletAsset.asset_id === walletAssetUpdated.asset_id
+          );
+          if (foundIndex !== -1) {
+            console.log("entrou aqui");
+            prev![foundIndex!].shares = walletAssetUpdated.shares;
+          }
 
-  //         return [...prev!];
-  //       }, false);
-  //       next(null, walletAssetUpdated);
-  //     });
-  //     eventSource.onerror = (error) => {
-  //       console.error(error);
-  //       eventSource.close();
-  //     };
-  //     return () => {
-  //       eventSource.close();
-  //     };
-  //   }
-  // );
+          return [...prev!];
+        }, false);
+        next(null, walletAssetUpdated);
+      });
+      eventSource.onerror = (error) => {
+        console.error(error);
+        eventSource.close();
+      };
+      return () => {
+        eventSource.close();
+      };
+    }
+  );
 
   return (
     <Table>

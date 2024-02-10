@@ -3,7 +3,7 @@
 import { MutableRefObject, useRef } from "react";
 import useSWR from "swr";
 import useSWRSubscription, { SWRSubscriptionOptions } from "swr/subscription";
-import { fetcher } from "../../utils/is-home-broker-closed";
+import { fetcher } from "../../utils/fetcher";
 import { AssetDaily } from "../models";
 import { ChartComponent, ChartComponentRef } from "./ChartComponent";
 
@@ -26,7 +26,7 @@ export const AssetChartComponent = (props: { asset_id: string }) => {
         console.log(event);
         const assetDailyCreated: AssetDaily = JSON.parse(event.data);
         chartRef.current.update({
-          time: String(new Date(assetDailyCreated.date).getTime()),
+          time: new Date(assetDailyCreated.date).getTime().toString(),
           value: assetDailyCreated.price,
         });
         await mutate(

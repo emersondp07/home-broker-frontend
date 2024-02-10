@@ -1,10 +1,12 @@
-import { Card } from "flowbite-react";
 import { AssetChartComponent } from "../../../components/AssetChatComponent";
-
 import MyOrders from "../../../components/MyOrders";
 import { OrderForm } from "../../../components/OrderForm";
 import { SyncOrders } from "../../../components/SyncOrders";
-import { TabsGroup, TabsItem } from "../../../components/flow-bite-component";
+import {
+  Card,
+  TabsGroup,
+  TabsItem,
+} from "../../../components/flow-bite-components";
 import { HiArrowUp, HiShoppingCart } from "../../../components/react-icons/hi";
 
 export default async function HomeBrokerPage({
@@ -12,8 +14,6 @@ export default async function HomeBrokerPage({
 }: {
   params: { wallet_id: string; asset_id: string };
 }) {
-  console.log(params.wallet_id);
-
   return (
     <main className="flex flex-grow flex-col container mx-auto p-2">
       <article className="format format-invert">

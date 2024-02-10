@@ -46,9 +46,7 @@ export const ChartComponent = forwardRef<
   ChartComponentRef,
   { header: string; data?: any[] }
 >((props, ref) => {
-  const chartContainerRef = useRef<HTMLDivElement>(null); // Defina o tipo de retorno aqui
-
-  // Defina o tipo de retorno da função api
+  const chartContainerRef = useRef() as MutableRefObject<HTMLDivElement>;
   const chartRef = useRef<{
     _api?: IChartApi;
     api: () => IChartApi;
@@ -63,11 +61,11 @@ export const ChartComponent = forwardRef<
         });
         this._api.timeScale().fitContent();
       }
-      return this._api as IChartApi; // Garanta que o retorno seja do tipo IChartApi
+      return this._api as IChartApi;
     },
     free() {
       if (this._api) {
-        this._api.remove();
+        this._api.timeScale().fitContent();
       }
     },
   });
@@ -75,6 +73,18 @@ export const ChartComponent = forwardRef<
 
   useImperativeHandle(ref, () => ({
     update: (data: { time: string; value: number }) => {
+      const timestamp = parseInt(data.time);
+
+      const date = new Date(timestamp);
+
+      const year = date.getFullYear();
+      const month = ("0" + (date.getMonth() + 1)).slice(-2);
+      const day = ("0" + date.getDate()).slice(-2);
+
+      const formattedDate = year + "-" + month + "-" + day;
+
+      data.time = formattedDate;
+
       seriesRef.current.update(data);
     },
   }));
@@ -84,18 +94,25 @@ export const ChartComponent = forwardRef<
       lineColor: colors.lineColor,
       topColor: colors.areaTopColor,
       bottomColor: colors.areaBottomColor,
+      autoscaleInfoProvider: () => ({
+        priceRange: {
+          minValue: 100,
+          maxValue: 100,
+        },
+      }),
     });
+
     // seriesRef.current.setData([
-    //   { time: "2018-12-22", value: 32.51 },
-    //   { time: "2018-12-23", value: 31.11 },
-    //   { time: "2018-12-24", value: 27.02 },
-    //   { time: "2018-12-25", value: 27.32 },
-    //   { time: "2018-12-26", value: 25.17 },
-    //   { time: "2018-12-27", value: 28.89 },
-    //   { time: "2018-12-28", value: 25.46 },
-    //   { time: "2018-12-29", value: 23.92 },
-    //   { time: "2018-12-30", value: 22.68 },
-    //   { time: "2018-12-31", value: 22.67 },
+    //   // { time: "2018-12-22", value: 32.51 },
+    //   // { time: "2018-12-23", value: 31.11 },
+    //   // { time: "2018-12-24", value: 27.02 },
+    //   // { time: "2018-12-25", value: 27.32 },
+    //   // { time: "2018-12-26", value: 25.17 },
+    //   // { time: "2018-12-27", value: 28.89 },
+    //   // { time: "2018-12-28", value: 25.46 },
+    //   // { time: "2018-12-29", value: 23.92 },
+    //   // { time: "2018-12-30", value: 22.68 },
+    //   // { time: "2018-12-31", value: 22.67 },
     // ]);
   }, []);
 
@@ -108,14 +125,15 @@ export const ChartComponent = forwardRef<
         ...chartOptions,
         width: chartContainerRef.current
           ? chartContainerRef.current.clientWidth
-          : 0,
+          : 10,
       });
     };
 
     window.addEventListener("resize", handleResize);
     return () => {
       window.removeEventListener("resize", handleResize);
-      chart.remove();
+      currentRef.free();
+      // currentRef.remove();
     };
   }, []);
 

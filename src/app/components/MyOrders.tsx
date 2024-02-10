@@ -1,12 +1,13 @@
-import { Badge, Table } from "flowbite-react";
 import { Order } from "../models";
 import {
+  Badge,
+  Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeadCell,
   TableRow,
-} from "./flow-bite-component";
+} from "./flow-bite-components";
 //Server Components - 13
 async function getOrders(wallet_id: string): Promise<Order[]> {
   const response = await fetch(
@@ -18,11 +19,9 @@ async function getOrders(wallet_id: string): Promise<Order[]> {
         revalidate: 1,
       },
     }
-  )
-    .then((response) => response.json())
-    .then((response) => response);
+  );
 
-  return response;
+  return response.json();
 }
 // 10 am - 17 18
 export default async function MyOrders(props: { wallet_id: string }) {
@@ -31,7 +30,7 @@ export default async function MyOrders(props: { wallet_id: string }) {
   return (
     <div>
       <article className="format format-invert">
-        <h2>Minha ordens</h2>
+        <h2>Minhas ordens</h2>
       </article>
       <Table className="mt-2">
         <TableHead>

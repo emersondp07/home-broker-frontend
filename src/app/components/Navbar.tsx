@@ -8,10 +8,6 @@ export default function DefaultNavbar() {
   const pathname = usePathname();
   const params = useParams();
 
-  const caminho = pathname !== "/favicon.ico" ? pathname : "/wallet1";
-  const parametro =
-    params.wallet_id !== "favicon.ico" ? params.wallet_id : "wallet1";
-
   return (
     <Navbar fluid rounded>
       <Navbar.Brand href="https://flowbite-react.com">
@@ -26,18 +22,18 @@ export default function DefaultNavbar() {
           Emerson Invest
         </span>
       </Navbar.Brand>
-      <Navbar.Toggle />
+      {/* <Navbar.Toggle /> */}
       <Navbar.Collapse>
         <Navbar.Link
-          active={caminho === `/${parametro}`}
+          active={pathname === `/${params.wallet_id}`}
           as={Link}
-          href={`/${parametro}`}
+          href={`/${params.wallet_id}`}
         >
           Home
         </Navbar.Link>
         <Navbar.Link href="#">Ativos</Navbar.Link>
       </Navbar.Collapse>
-      <div className="flex md:order-2 text-white">Olá {parametro}</div>
+      <div className="flex md:order-2 text-white">Olá {params.wallet_id}</div>
     </Navbar>
   );
 }

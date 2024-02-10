@@ -1,5 +1,5 @@
-import { Button, Label, TextInput } from "flowbite-react";
 import { revalidateTag } from "next/cache";
+import { Button, Label, TextInput } from "./flow-bite-components";
 
 async function initTransaction(formData: FormData) {
   "use server";
@@ -10,7 +10,7 @@ async function initTransaction(formData: FormData) {
   const type = formData.get("type");
 
   const response = await fetch(
-    `http://localhost:3000/wallets/${wallet_id}/orders`,
+    `http://host.docker.internal:3000/wallets/${wallet_id}/orders`,
     {
       headers: {
         "Content-Type": "application/json",

@@ -13,7 +13,9 @@ export async function GET(
         revalidate: 1,
       },
     }
-  );
+  )
+    .then((response) => response.json())
+    .then((response) => response.data);
 
   return NextResponse.json(await response.json());
 }
